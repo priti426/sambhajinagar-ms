@@ -7,4 +7,3 @@ public class ccna {
     @GetMapping("/ccna")
     public String getData() {return  "Welcome to ccna learn aws stagemaker kubeflow mlflow tensorflow Class" ; }
 }
-
