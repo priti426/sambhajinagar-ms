@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ccna {
     @GetMapping("/ccna")
-    public String getData() {return  "Welcome to ccna learn aws stagemaker kubeflow mlflow tensorflow Class" ; }
+    public String getData() {return  "Welcome to ccna learn aws stagemaker kubeflow mlflow tensorfloe Class" ; }
 }
