@@ -47,12 +47,15 @@ pipeline {
                         echo 'Docker Image Scanning Started'
             }
         }
-        node () {
-            stage ('blah') {
-                echo get_current_time_date()
+        post {
+                always {
+                    echo 'Pipeline finished'
+                }
+                success {
+                    echo 'Pipeline completed successfully!'
+                }
+                failure {
+                    echo 'Pipeline failed!'
+                }
             }
-        }
-
-        def get_current_time_date() {
-            return 'hoge'
         }
