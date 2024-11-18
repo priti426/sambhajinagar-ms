@@ -1,47 +1,49 @@
 pipeline {
-    agent any
+
+	agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3', artifactNumToKeepStr: '3'))
+    }
+
+    tools {
+        maven 'maven_3.9.4'
+    }
 
     stages {
-        stage('Checkout') {
+        stage('Code Compilation') {
             steps {
-                checkout scm  // This checks out the code from the Git repository
+                echo 'Code Compilation is In Progress!'
+                sh 'mvn clean compile'
+                echo 'Code Compilation is Completed Successfully!'
             }
         }
-
-        stage('Build') {
+        stage('Code QA Execution') {
             steps {
-                script {
-                    echo 'Building the project...'
-                    sh 'mvn clean install'
-                }
+                echo 'JUnit Test Case Check in Progress!'
+                sh 'mvn clean test'
+                echo 'JUnit Test Case Check Completed!'
             }
         }
-
-        stage('Test') {
+        stage('Code Package') {
             steps {
-                script {
-                    echo 'Running tests...'
-                    sh 'mvn test'
-                }
+                echo 'Creating WAR Artifact'
+                sh 'mvn clean package'
+                echo 'Artifact Creation Completed'
             }
         }
-
-        stage('Deploy') {
+        stage('Building & Tag Docker Image') {
             steps {
-                script {
-                    echo 'Deploying the application...'
-                    sh 'mvn deploy'
-                }
+                echo "Starting Building Docker Image"
+                sh "docker build -t priti426/sambhajinagar-ms ."
+                sh "docker build -t sambhajinagar-ms ."
+                echo 'Docker Image Build Completed'
             }
         }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
+        stage('Docker Image Scanning') {
+            steps {
+                echo 'Docker Image Scanning Started'
+                sh 'docker --version'
+                echo 'Docker Image Scanning Started'
+            }
         }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
-}
