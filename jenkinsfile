@@ -41,22 +41,10 @@ pipeline {
             }
         }
         stage('Docker Image Scanning') {
-                    steps {
+            steps {
                         echo 'Docker Image Scanning Started'
                         sh 'docker --version'
                         echo 'Docker Image Scanning Started'
-                    }
-                }
+            }
+        }
 
-    post {
-        always {
-            echo 'Pipeline finished'
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
-}
