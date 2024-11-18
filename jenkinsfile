@@ -47,18 +47,18 @@ pipeline {
                         echo 'Docker Image Scanning Started'
                     }
                 }
-                stage(' Docker push to Docker Hub') {
-                   steps {
-                      script {
-                         withCredentials([string(credentialsId: 'dockerhubCred', variable: 'dockerhubCred')]){
-                         sh 'docker login docker.io -u priti426 -p ${dockerhubCred}'
-                         echo "Push Docker Image to DockerHub : In Progress"
-                         sh 'docker push priti426/sambhajinagar-ms:latest'
-                         echo "Push Docker Image to DockerHub : In Progress"
-                         }
-                      }
-                    }
-                }
+               stage('Push Docker Image to Docker Hub') {
+                           steps {
+                               script {
+                                   withCredentials([string(credentialsId: 'dockerhubCred', variable: 'dockerhubCred')]) {
+                                       sh 'docker login docker.io -u priti426 -p ${dockerhubCred}'
+                                       echo 'Pushing Docker Image to Docker Hub...'
+                                       sh "docker push ${DOCKER_IMAGE}:latest"
+                                       echo 'Docker Image Pushed to Docker Hub Successfully!'
+                                   }
+                               }
+                           }
+                       }
                 stage(' Docker Image Push to Amazon ECR') {
                    steps {
                       script {
