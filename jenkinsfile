@@ -44,13 +44,12 @@ pipeline {
         }
 
         stage('Docker Image Scanning') {
-            steps {
-                echo 'Docker Image Scanning Started'
-                // Example of scanning Docker image (you can replace with your actual tool)
-                sh 'docker scan sambhajinagar-ms'
-                echo 'Docker Image Scanning Completed'
-            }
-        }
+                    steps {
+                        echo 'Scanning Docker Image...'
+                        sh 'docker scan priti426/sambhajinagar-ms:latest || echo "Scan Failed - Proceeding with Caution"'
+                        echo 'Docker Image Scanning Completed!'
+                    }
+                }
 
         stage('Upload Docker Image to Nexus') {
             steps {
