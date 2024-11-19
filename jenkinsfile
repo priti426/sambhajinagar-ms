@@ -51,23 +51,6 @@ pipeline {
                     }
                 }
 
-        stage('Upload Docker Image to Nexus') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        echo "Docker login to Nexus repository"
-                        sh 'docker login http://13.234.117.148:8085/repository/sambhajinagar-ms/ -u ${USERNAME} -p ${PASSWORD}'
-                        echo "Push Docker Image to Nexus: In Progress"
-                        // Tagging the image with the latest version
-                        sh 'docker tag sambhajinagar-ms 13.234.117.148:8085/sambhajinagar-ms:latest'
-                        sh 'docker push 13.234.117.148:8085/sambhajinagar-ms:latest'
-                        echo "Push Docker Image to Nexus: Completed"
-                    }
-                }
-            }
-        }
-    }
-
     post {
         success {
             echo 'Pipeline completed successfully!'
