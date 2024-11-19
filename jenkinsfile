@@ -9,6 +9,12 @@ pipeline {
         maven 'maven_3.9.4'
     }
 
+    environment {
+        IMAGE_NAME = 'sambhajinagar-ms'
+        // Dynamic image tag based on build number or Git commit hash
+        IMAGE_TAG = "${IMAGE_NAME}:${BUILD_NUMBER}"
+    }
+
     stages {
         stage('Code Compilation') {
             steps {
@@ -37,28 +43,31 @@ pipeline {
         stage('Building & Tag Docker Image') {
             steps {
                 echo 'Starting Building Docker Image'
-                // Use consistent image naming
-                sh 'docker build -t sambhajinagar-ms .'
+                sh "docker build -t ${IMAGE_TAG} ."
                 echo 'Docker Image Build Completed'
             }
         }
 
         stage('Docker Image Scanning') {
-                    steps {
-                        echo 'Scanning Docker Image...'
-                        sh 'docker scan priti426/sambhajinagar-ms:latest || echo "Scan Failed - Proceeding with Caution"'
-                        echo 'Docker Image Scanning Completed!'
-                    }
-                }
+            steps {
+                echo 'Scanning Docker Image...'
+                sh "docker scan ${IMAGE_TAG} || echo 'Scan Failed - Proceeding with Caution'"
+                echo 'Docker Image Scanning Completed!'
+            }
+        }
+    }
 
     post {
         success {
             echo 'Pipeline completed successfully!'
             // Optionally, add notification steps here (email, Slack, etc.)
+            // Example Slack notification
+            slackSend(channel: '#your-channel', message: "Build ${BUILD_NUMBER} succeeded")
         }
         failure {
             echo 'Pipeline failed. Please check the logs.'
             // Optionally, send failure notification here
+            slackSend(channel: '#your-channel', message: "Build ${BUILD_NUMBER} failed")
         }
     }
 }
