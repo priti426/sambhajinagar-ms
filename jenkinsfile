@@ -55,6 +55,14 @@ pipeline {
                 echo 'Docker Image Scanning Completed'
             }
         }
+
+        // Optional: Clean up unused Docker images to save space
+        stage('Clean up Docker Images') {
+            steps {
+                echo 'Cleaning up unused Docker images'
+                sh "docker rmi ${IMAGE_TAG} || echo 'No images to remove'"
+            }
+        }
     }
 
     post {
