@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'sambhajinagar-ms'
-        // Dynamic image tag based on build number or Git commit hash
+        // Dynamic image tag based on build number
         IMAGE_TAG = "${IMAGE_NAME}:${BUILD_NUMBER}"
     }
 
@@ -40,32 +40,32 @@ pipeline {
             }
         }
 
-         stage('Building & Tag Docker Image') {
-                    steps {
-                        echo "Starting Building Docker Image"
-                        sh "docker build -t priti426/sambhajinagar-ms ."
-                        sh "docker build -t sambhajinagar-ms ."
-                        echo 'Docker Image Build Completed'
-                    }
-                }
-                stage('Docker Image Scanning') {
-                    steps {
-                        echo 'Docker Image Scanning Started'
-                        sh 'docker --version'
-                        echo 'Docker Image Scanning Started'
-                    }
-                }
+        stage('Building & Tag Docker Image') {
+            steps {
+                echo "Starting Building Docker Image with tag: ${IMAGE_TAG}"
+                sh "docker build -t ${IMAGE_TAG} ."
+                echo 'Docker Image Build Completed'
+            }
+        }
+
+        stage('Docker Image Scanning') {
+            steps {
+                echo 'Docker Image Scanning Started'
+                sh "docker scan ${IMAGE_TAG} || echo 'Scan Failed - Proceeding with Caution'"
+                echo 'Docker Image Scanning Completed'
+            }
+        }
+    }
 
     post {
         success {
             echo 'Pipeline completed successfully!'
-            // Optionally, add notification steps here (email, Slack, etc.)
-            // Example Slack notification
+            // Slack notification for success
             slackSend(channel: '#your-channel', message: "Build ${BUILD_NUMBER} succeeded")
         }
         failure {
             echo 'Pipeline failed. Please check the logs.'
-            // Optionally, send failure notification here
+            // Slack notification for failure
             slackSend(channel: '#your-channel', message: "Build ${BUILD_NUMBER} failed")
         }
     }
