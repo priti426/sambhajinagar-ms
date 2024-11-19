@@ -40,22 +40,21 @@ pipeline {
             }
         }
 
-        stage('Building & Tag Docker Image') {
-            steps {
-                echo 'Starting Building Docker Image'
-                sh "docker build -t ${IMAGE_TAG} ."
-                echo 'Docker Image Build Completed'
-            }
-        }
-
-        stage('Docker Image Scanning') {
-            steps {
-                echo 'Scanning Docker Image...'
-                sh "docker scan ${IMAGE_TAG} || echo 'Scan Failed - Proceeding with Caution'"
-                echo 'Docker Image Scanning Completed!'
-            }
-        }
-    }
+         stage('Building & Tag Docker Image') {
+                    steps {
+                        echo "Starting Building Docker Image"
+                        sh "docker build -t priti426/sambhajinagar-ms ."
+                        sh "docker build -t sambhajinagar-ms ."
+                        echo 'Docker Image Build Completed'
+                    }
+                }
+                stage('Docker Image Scanning') {
+                    steps {
+                        echo 'Docker Image Scanning Started'
+                        sh 'docker --version'
+                        echo 'Docker Image Scanning Started'
+                    }
+                }
 
     post {
         success {
